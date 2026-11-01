@@ -29,10 +29,6 @@ void read_metadata_xml(const char *filename)
      * Cleanup function for the XML library.
      */
     xmlCleanupParser();
-    /*
-     * this is to debug memory for regression tests
-     */
-    xmlMemoryDump();
 }
 
 /***
@@ -120,10 +116,6 @@ int write_metadata_xml(scarletbook_handle_t *handle, const char *path_file)
      * Cleanup function for the XML library.
      */
     xmlCleanupParser();
-    /*
-     * this is to debug memory for regression tests
-     */
-    //xmlMemoryDump();
     return 0;
 }
 

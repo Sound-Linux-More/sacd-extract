@@ -311,7 +311,7 @@ struct id3_tag *id3_open_mem(void *ptr, int flags)
 	/*
 	 * Allocate ID3 structure.
 	 */
-	id3 = calloc(sizeof (struct id3_tag), 1);
+	id3 = calloc(1, sizeof(struct id3_tag));
 
 	/*
 	 * Initialize access pointers.
@@ -361,7 +361,7 @@ struct id3_tag *id3_open_fd(int fd, int flags)
 	/*
 	 * Allocate ID3 structure.
 	 */
-	id3 = calloc(sizeof(struct id3_tag), 1);
+	id3 = calloc(1, sizeof(struct id3_tag));
 
 	/*
 	 * Initialize access pointers.
@@ -420,7 +420,7 @@ struct id3_tag *id3_open_fp(FILE *fp, int flags)
 	/*
 	 * Allocate ID3 structure.
 	 */
-	id3 = calloc(sizeof(struct id3_tag), 1);
+	id3 = calloc(1, sizeof(struct id3_tag));
 
 	/*
 	 * Initialize access pointers.

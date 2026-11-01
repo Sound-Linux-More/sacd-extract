@@ -69,7 +69,7 @@ scarletbook_handle_t *scarletbook_open(sacd_reader_t *sacd)
 {
     scarletbook_handle_t *sb;
 
-    sb = (scarletbook_handle_t *) calloc(sizeof(scarletbook_handle_t), 1);
+    sb = (scarletbook_handle_t *) calloc(1, sizeof(scarletbook_handle_t));
     if (!sb)
         return NULL;
 

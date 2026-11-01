@@ -140,7 +140,7 @@ int scarletbook_output_enqueue_track(scarletbook_output_t *output, int area, int
 
     if ((handler = find_output_format(fmt)))
     {
-        output_format_ptr = calloc(sizeof(scarletbook_output_format_t), 1);
+        output_format_ptr = calloc(1, sizeof(scarletbook_output_format_t));
         output_format_ptr->sb_handle = sb_handle;
         output_format_ptr->cb_fwprintf = output->fwprintf_callback;
         output_format_ptr->area = area;
@@ -237,7 +237,7 @@ int scarletbook_output_enqueue_raw_sectors(scarletbook_output_t *output, int sta
 
     if ((handler = find_output_format(fmt)))
     {
-        output_format_ptr = calloc(sizeof(scarletbook_output_format_t), 1);
+        output_format_ptr = calloc(1, sizeof(scarletbook_output_format_t));
         output_format_ptr->sb_handle = sb_handle;
         output_format_ptr->cb_fwprintf = output->fwprintf_callback;
         output_format_ptr->handler = *handler;
@@ -263,7 +263,7 @@ int scarletbook_output_enqueue_concatenate_tracks(scarletbook_output_t *output, 
 
     if ((handler = find_output_format(fmt)))
     {
-        output_format_ptr = calloc(sizeof(scarletbook_output_format_t), 1);
+        output_format_ptr = calloc(1, sizeof(scarletbook_output_format_t));
         output_format_ptr->sb_handle = sb_handle;
         output_format_ptr->cb_fwprintf = output->fwprintf_callback;
         output_format_ptr->area = area;

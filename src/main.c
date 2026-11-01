@@ -431,7 +431,7 @@ static void init(void)
 #if defined(WIN32) || defined(_WIN32)
     signal(SIGINT, handle_sigint);
 	
-#else
+#elif defined(__USE_POSIX)
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &handle_sigint;
@@ -726,7 +726,7 @@ char * return_current_directory()
         char *buffer;
         if ((buffer = return_current_directory() ) != NULL)   
         {
-            char *wide_filename;
+            wchar_t *wide_filename;
             CHAR2WCHAR(wide_filename, buffer);
             fwprintf(stdout, L"\nCurrent (working) directory (for the app and 'sacd_extract.cfg' file): %ls\n", (wchar_t *)wide_filename);
             free(wide_filename);
@@ -783,7 +783,7 @@ char * return_current_directory()
             {
                 wchar_t *wide_filename;
                 CHAR2WCHAR(wide_filename, opts.output_dir);
-                fwprintf(stdout, L"%ls doesn't exist or is not a directory.\n",wide_filename);
+                fwprintf(stdout, L"'%ls' doesn't exist or is not a directory.\n",wide_filename);
                 free(wide_filename);
 
 				exit_main_flag=-1;
@@ -799,7 +799,7 @@ char * return_current_directory()
             {
                 wchar_t *wide_filename;
                 CHAR2WCHAR(wide_filename, opts.output_dir_conc);
-                fwprintf(stdout, L"%ls doesn't exist or is not a directory.\n", opts.output_dir_conc);
+                fwprintf(stdout, L"'%ls' doesn't exist or is not a directory.\n", wide_filename);
                 free(wide_filename);
 
                 exit_main_flag=-1;
@@ -883,11 +883,11 @@ char * return_current_directory()
                     if (ret_mkdir != 0)
                     {
                         free(album_filename);
-                        free(output_dir);
                         scarletbook_close(handle);
                         sacd_close(sacd_reader);
                         exit_main_flag = -1;
                         LOG(lm_main, LOG_ERROR, ("ERROR in main: exporting XML, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
+                        free(output_dir);
                         goto exit_main;
                     }
 
@@ -937,11 +937,11 @@ char * return_current_directory()
                         if (ret_mkdir != 0)
                         {
                             free(album_filename);
-                            free(output_dir);
                             scarletbook_close(handle);
                             sacd_close(sacd_reader);
                             exit_main_flag=-1;
                             LOG(lm_main, LOG_ERROR, ("ERROR in main: ISO, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
+                            free(output_dir);
                             goto exit_main;
                         }
                     }
