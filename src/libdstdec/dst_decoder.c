@@ -347,7 +347,7 @@ static void finish_write_job(dst_decoder_t *dst_decoder)
 
 dst_decoder_t* dst_decoder_create(int channel_count, frame_decoded_callback_t frame_decoded_callback, frame_error_callback_t frame_error_callback, void *userdata)
 {
-    dst_decoder_t *dst_decoder = (dst_decoder_t*) calloc(sizeof(dst_decoder_t), 1);
+    dst_decoder_t *dst_decoder = (dst_decoder_t*) calloc(1, sizeof(dst_decoder_t));
 
     if (!dst_decoder)
         exit(1);

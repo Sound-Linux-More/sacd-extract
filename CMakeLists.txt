@@ -1,13 +1,13 @@
 # CMake build file for SACD Extract
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.15)
 
 # Force to compile for Mac OS X 10.13. target (if you want the app run on all OS X versions).
 # Without this adding, if build is made on a MacOS 10.15 or newer, then the app will not run on systems older than 10.15.
 # You can delete this if you don't care about the Mac OS X 10.15 incompatibilty problem. 
 if (APPLE)
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
-set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.13)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
+    set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.13)
 endif()
 
 include_directories(src/libcommon src/libsacd src/libdstdec src/libid3)
@@ -111,7 +111,7 @@ file(GLOB main_headers src/*.h)
 file(GLOB main_sources src/*.c)
 source_group(main FILES ${main_headers} ${main_sources})
 
-add_executable(sacd_extract 
+add_executable(sacd_extract
     ${main_headers} ${main_sources}
     ${libcommon_headers} ${libcommon_sources}
     ${libdstdec_headers} ${libdstdec_sources}

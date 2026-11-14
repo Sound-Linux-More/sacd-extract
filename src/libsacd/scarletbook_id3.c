@@ -199,7 +199,8 @@ int scarletbook_id3_tag_render(scarletbook_handle_t *handle, uint8_t *buffer, in
         }
 
         // ISCR
-        if (&handle->area[area].area_isrc_genre->isrc[track])
+        if (handle && 
+            handle->area[area].area_isrc_genre)
         {
             char isrc[16];
             

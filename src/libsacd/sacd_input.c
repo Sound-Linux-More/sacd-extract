@@ -140,7 +140,7 @@ static sacd_input_t sacd_dev_input_open(const char *target)
     sacd_input_t dev;
 
     /* Allocate the library structure */
-    dev = (sacd_input_t) calloc(sizeof(*dev), 1);
+    dev = (sacd_input_t) calloc(1, sizeof(*dev));
     if (dev == NULL)
     {
         fprintf(stderr, "libsacdread: Could not allocate memory.\n");
@@ -344,7 +344,7 @@ static sacd_input_t sacd_net_input_open(const char *target)
     uint8_t zero = 0;
 
     /* Allocate the library structure */
-    dev = (sacd_input_t) calloc(sizeof(*dev), 1);
+    dev = (sacd_input_t) calloc(1, sizeof(*dev));
     if (dev == NULL)
     {
         fprintf(stderr, "libsacdread: Could not allocate memory.\n");
