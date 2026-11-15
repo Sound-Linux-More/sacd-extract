@@ -1,3 +1,15 @@
+Version: sacd_extract 0.3.9.4
+updates, improvements and fixes to the code
+* add .gitignore
+* increase minimnal required CMake version. currently versions 3.10 and older are marked as deprecated
+* fix compilation errors
+* fix calloc warnings with sizeof in early parameter. such parameter should be the last one
+* fix xmlMemoryDump deprectated warning. it wasn't in use anymore, just removed
+* fix use after free warning. calloc makes source pointer invalid
+* fix "comparison will always evaluate as 'true'" because compare of the address inside structure instead of the value in the array
+* fix "if (&handle->area[area].area_isrc_genre->isrc[track]) will alwys return 'true'", as it is just an address with non zero offset from area_isrc_genre. the only value can be 0 is area_isrc_genre itself. all the tail has defined length and can't be null
+* fix wrong string output for output-dir-conc and improve a bit output format
+
 Version: sacd_extract 0.3.9.3-75
 - changed in how the content of TPE1 (Artist name) of ID3 tag is filled. If Disc/Album artist or Performer are missing from the SACD, then the TPE1 is no longer created; 
 - fixed a bug in concurrent ISO+DSF/DSDIFF processing mode (when folders are not identical);
