@@ -67,6 +67,7 @@ char *str_replace(const char *src, const char *from, const char *to)
     char *dst = value;
     if (value != NULL)
     {
+        size_t offset;
         for ( ;; )
         {
             const char *match = strstr(src, from);
@@ -75,13 +76,14 @@ char *str_replace(const char *src, const char *from, const char *to)
                 size_t count = match - src;
                 char *temp;
                 size += tolen - fromlen;
+                offset = dst - value;
                 temp = realloc(value, size);
                 if ( temp == NULL )
                 {
                     free(value);
                     return NULL;
                 }
-                dst = temp + (dst - value);
+                dst = temp + offset;
                 value = temp;
                 memmove(dst, src, count);
                 src += count;

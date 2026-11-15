@@ -289,7 +289,7 @@ int id3_read_frame(struct id3_tag *id3)
 	/*
 	 * Allocate frame.
 	 */
-	frame = calloc(sizeof(*frame), 1);
+	frame = calloc(1, sizeof(*frame));
 
 	frame->fr_owner = id3;
 
@@ -574,7 +574,7 @@ struct id3_frame *id3_add_frame(struct id3_tag *id3, uint32_t type)
 	/*
 	 * Allocate frame.
 	 */
-	frame = calloc(sizeof(*frame), 1);
+	frame = calloc(1, sizeof(*frame));
 
 	/*
 	 * Initialize frame
@@ -729,7 +729,7 @@ static int id3_read_frame_v22(struct id3_tag *id3)
 	/*
 	 * Allocate frame.
 	 */
-	frame = calloc(sizeof(*frame), 1);
+	frame = calloc(1, sizeof(*frame));
 
 	frame->fr_owner = id3;
 	frame->fr_raw_size = size;
