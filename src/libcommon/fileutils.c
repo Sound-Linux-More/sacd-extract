@@ -51,7 +51,13 @@ int stat_wrap(const char *pathname, struct stat *buf)
     ret = _wstat(w_pathname, &buffer);
     free(w_pathname);
 #else
-    ret = stat(pathname, buf);
+    if (!pathname) {
+        ret = -1;
+        errno = ENOENT;
+    }
+    else {
+        ret = stat(pathname, buf);
+    }
 #endif
     return ret;
 }
@@ -125,14 +131,14 @@ https://www.quora.com/What-is-the-longest-file-path-allowed-for-Linux
 char *make_filename(const char *path, const char *dir, const char *filename, const char *extension)
 {
     char * ret = NULL;
-    int  pos   = 0;
+    size_t pos   = 0;
     char string_buf[MAX_BUFF_FULL_PATH_LEN];  // keep the full path
 
     memset(string_buf,0,sizeof(string_buf));
 
     if (path)
     {
-        strncpy(string_buf, path, min(strlen(path), sizeof(string_buf) - 5)); // (-4 => making room for dot + extension!!!)
+        memcpy(string_buf, path, sizeof(path[0]) * min(strlen(path), sizeof(string_buf) - 5)); // (-4 => making room for dot + extension!!!)
         pos += min(strlen(path), sizeof(string_buf) - 5);
 #if defined(WIN32) || defined(_WIN32)
         if(string_buf[pos-1] != '\\'){
@@ -149,7 +155,7 @@ char *make_filename(const char *path, const char *dir, const char *filename, con
     }
     if (dir)
     {       
-        strncpy(string_buf+pos,dir,min(strlen(dir), sizeof(string_buf) -pos-5));
+        memcpy(string_buf+pos,dir, sizeof(dir[0]) * min(strlen(dir), sizeof(string_buf) -pos-5));
         pos += min(strlen(dir), sizeof(string_buf) - pos - 5);
 #if defined(WIN32) || defined(_WIN32)
         if (string_buf[pos - 1] != '\\')
@@ -173,10 +179,10 @@ char *make_filename(const char *path, const char *dir, const char *filename, con
     {
         char filename_duplicate[MAX_FILENAME_LEN];
         memset(filename_duplicate, 0, sizeof(filename_duplicate));
-        strncpy(filename_duplicate, filename, min(strlen(filename), sizeof(filename_duplicate) - 1));
+        memcpy(filename_duplicate, filename, sizeof(filename[0]) * min(strlen(filename), sizeof(filename_duplicate) - 1));
         sanitize_filename(filename_duplicate);
 
-        strncpy(string_buf + pos, filename_duplicate, min(strlen(filename_duplicate), sizeof(string_buf) - pos - 5)); 
+        memcpy(string_buf + pos, filename_duplicate, sizeof(filename_duplicate[0]) * min(strlen(filename_duplicate), sizeof(string_buf) - pos - 5)); 
         pos += min(strlen(filename_duplicate), sizeof(string_buf) - pos - 5);
     }
 
@@ -184,7 +190,7 @@ char *make_filename(const char *path, const char *dir, const char *filename, con
     {
         string_buf[pos] = '.';
         pos++;
-        strncpy(string_buf + pos, extension, min(strlen(extension), sizeof(string_buf) - pos - 1));
+        memcpy(string_buf + pos, extension, sizeof(extension[0]) * min(strlen(extension), sizeof(string_buf) - pos - 1));
         pos += min(strlen(extension), sizeof(string_buf) - pos - 1);
     }
 
@@ -211,9 +217,9 @@ char *make_filename(const char *path, const char *dir, const char *filename, con
 char * parse_format(const char * format, int tracknum, const char * year, const char * artist, const char * album, const char * title)
 {
     unsigned i     = 0;
-    int      len   = 0;
+    size_t   len   = 0;
     char     * ret = NULL;
-    int      pos   = 0;
+    size_t   pos   = 0;
 
     for (i = 0; i < strlen(format); i++)
     {
@@ -267,14 +273,14 @@ char * parse_format(const char * format, int tracknum, const char * year, const 
             case 'A':
                 if (artist)
                 {
-                    strncpy(&ret[pos], artist, strlen(artist));
+                    memcpy(&ret[pos], artist, sizeof(artist[0]) * strlen(artist));
                     pos += strlen(artist);
                 }
                 break;
             case 'L':
                 if (album)
                 {
-                    strncpy(&ret[pos], album, strlen(album));
+                    memcpy(&ret[pos], album, sizeof(album[0]) * strlen(album));
                     pos += strlen(album);
                 }
                 break;
@@ -289,14 +295,14 @@ char * parse_format(const char * format, int tracknum, const char * year, const 
             case 'Y':
                 if (year)
                 {
-                    strncpy(&ret[pos], year, strlen(year));
+                    memcpy(&ret[pos], year, sizeof(year[0]) * strlen(year));
                     pos += strlen(year);
                 }
                 break;
             case 'T':
                 if (title)
                 {
-                    strncpy(&ret[pos], title, strlen(title));
+                    memcpy(&ret[pos], title, sizeof(title[0]) * strlen(title));
                     pos += strlen(title);
                 }
                 break;
@@ -332,8 +338,8 @@ char * parse_format(const char * format, int tracknum, const char * year, const 
 //  0 on succes
 int recursive_mkdir(char* path_and_name,char * base_dir, mode_t mode)
 {
-    int  count;
-    int  path_and_name_length = 0;
+    size_t count;
+    size_t path_and_name_length = 0;
     int  rc;
     char charReplaced;
     char * pos=NULL;
@@ -424,6 +430,11 @@ char *get_unique_path(char *dir, char *file, const char *ext)
     struct stat stat_file;
 
     file_new = (char *)malloc((strlen(file)+16)*sizeof(char));
+    if (!file_new)
+    {
+        return NULL;
+    }
+    
     strcpy(file_new, file);
     for(i = 0; i < 64; i ++){
         if(i){

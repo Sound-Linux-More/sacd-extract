@@ -282,12 +282,12 @@ char *get_path_disc_album(scarletbook_handle_t *handle, int artist_flag)
     memset(disc_album_title, 0,sizeof(disc_album_title));
     if (p_album_title)
     {
-        strncpy(disc_album_title, p_album_title, min(strlen(p_album_title), MAX_ALBUM_TITLE_LEN));
+        memcpy(disc_album_title, p_album_title, sizeof(p_album_title[0]) * min(strlen(p_album_title), MAX_ALBUM_TITLE_LEN));
         sanitize_filename(disc_album_title);
     }
     else
     {
-        strncpy(disc_album_title, "unknown album title", min(strlen("unknown album title"), MAX_ALBUM_TITLE_LEN));
+        memcpy(disc_album_title, "unknown album title", sizeof(char) * min(strlen("unknown album title"), MAX_ALBUM_TITLE_LEN));
     }
 
     memset(disc_artist, 0, sizeof(disc_artist));
@@ -337,24 +337,24 @@ char *get_path_disc_album(scarletbook_handle_t *handle, int artist_flag)
         if (artist_flag !=0  && strlen(disc_artist) > 0) // add artist name
         {
             disc_album_title_final = (char *)calloc(strlen(disc_artist) + 3 + strlen(disc_album_title) + 1 + strlen(multiset_s) + 1, sizeof(char));
-            strncpy(disc_album_title_final, disc_artist, strlen(disc_artist));
-            strncat(disc_album_title_final, " - ", 3);
-            strncat(disc_album_title_final, disc_album_title, strlen(disc_album_title));
+            memcpy(disc_album_title_final, disc_artist, sizeof(disc_artist[0]) * strlen(disc_artist));
+            strcat(disc_album_title_final, " - ");
+            strcat(disc_album_title_final, disc_album_title);
         }
         else 
         {
             disc_album_title_final = (char *)calloc(strlen(disc_album_title) + 1 + strlen(multiset_s) + 1, sizeof(char));
-            strncat(disc_album_title_final, disc_album_title, strlen(disc_album_title));
+            strcat(disc_album_title_final, disc_album_title);
         }
 
 #if defined(WIN32) || defined(_WIN32)
-            strncat(disc_album_title_final, "\\", 1);
+            strcat(disc_album_title_final, "\\");
 #else
-            strncat(disc_album_title_final, "/", 1);
+            strcat(disc_album_title_final, "/");
 #endif
             //}
 
-            strncat(disc_album_title_final, multiset_s, strlen(multiset_s));
+            strcat(disc_album_title_final, multiset_s);
     }
     else   // not album set
     {
@@ -370,16 +370,14 @@ char *get_path_disc_album(scarletbook_handle_t *handle, int artist_flag)
         if (artist_flag !=0 && strlen(disc_artist) > 0) // add artist name
         {
             disc_album_title_final = (char *)calloc(strlen(disc_artist) + 3 + strlen(disc_album_title) + 1, sizeof(char));
-            strncpy(disc_album_title_final, disc_artist, strlen(disc_artist));
-            strncat(disc_album_title_final, " - ", 3);
-            strncat(disc_album_title_final, disc_album_title, strlen(disc_album_title));
+            memcpy(disc_album_title_final, disc_artist, sizeof(disc_artist[0]) * strlen(disc_artist));
+            strcat(disc_album_title_final, " - ");
+            strcat(disc_album_title_final, disc_album_title);
         }
         else{
             disc_album_title_final = (char *)calloc(strlen(disc_album_title) + 1, sizeof(char));
-            strncat(disc_album_title_final, disc_album_title, strlen(disc_album_title));
+            strcat(disc_album_title_final, disc_album_title);
         }
-        
-                    
         //}
         
     }
@@ -460,7 +458,7 @@ char *get_music_filename(scarletbook_handle_t *handle, int area, int track, cons
     }
     else
     {
-        strncpy(track_title, "unknown track title", min(strlen("unknown track title"), MAX_TRACK_TITLE_LEN));
+        memcpy(track_title, "unknown track title", sizeof(char) * min(strlen("unknown track title"), MAX_TRACK_TITLE_LEN));
     }
     
     if (master_text->disc_title)
@@ -483,7 +481,7 @@ char *get_music_filename(scarletbook_handle_t *handle, int area, int track, cons
     }
     else
     {
-         strncpy(disc_album_title, "unknown title", min(strlen("unknown title"), MAX_ALBUM_TITLE_LEN));
+        memcpy(disc_album_title, "unknown title", sizeof(char) * min(strlen("unknown title"), MAX_ALBUM_TITLE_LEN));
     }
     
     snprintf(disc_album_year, sizeof(disc_album_year), "%04u", handle->master_toc->disc_date_year);

@@ -229,7 +229,7 @@ int scarletbook_output_enqueue_track(scarletbook_output_t *output, int area, int
     return -1;
 }
 
-int scarletbook_output_enqueue_raw_sectors(scarletbook_output_t *output, int start_lsn, int length_lsn, char *file_path, char *fmt)
+int scarletbook_output_enqueue_raw_sectors(scarletbook_output_t *output, uint32_t start_lsn, uint32_t length_lsn, char *file_path, char *fmt)
 {
     scarletbook_format_handler_t const * handler;
     scarletbook_output_format_t * output_format_ptr;
@@ -245,7 +245,7 @@ int scarletbook_output_enqueue_raw_sectors(scarletbook_output_t *output, int sta
         output_format_ptr->start_lsn = start_lsn;
         output_format_ptr->length_lsn = length_lsn;
 
-        LOG(lm_main, LOG_NOTICE, ("Queuing raw: %s, start_lsn: %d, length_lsn: %d", file_path, start_lsn, length_lsn));
+        LOG(lm_main, LOG_NOTICE, ("Queuing raw: %s, start_lsn: " PRIu32 ", length_lsn: " PRIu32, file_path, start_lsn, length_lsn));
 
         list_add_tail(&output_format_ptr->siblings, &output->ripping_queue);
 

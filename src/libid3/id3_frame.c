@@ -34,118 +34,117 @@ static void* id3_frame_get_dataptr(struct id3_frame *frame);
 static int id3_frame_get_size(struct id3_frame *frame);
 static int id3_read_frame_v22(struct id3_tag *id3);
 
-
 /*
  * Description of all valid ID3v2 frames.
  */
 static struct id3_framedesc framedesc[] = {
-	{ID3_AENC, "AENC", "Audio encryption"},
-	{ID3_APIC, "APIC", "Attached picture"},
-	{ID3_ASPI, "ASPI", "Audio seek point index"},		/* v4 only */
+	{ID3_AENC,  {'A', 'E', 'N', 'C'},  "Audio encryption"},
+	{ID3_APIC,  {'A', 'P', 'I', 'C'},  "Attached picture"},
+	{ID3_ASPI,  {'A', 'S', 'P', 'I'},  "Audio seek point index"},		/* v4 only */
 
-	{ID3_COMM, "COMM", "Comments"},
-	{ID3_COMR, "COMR", "Commercial frame"},
+	{ID3_COMM,  {'C', 'O', 'M', 'M'},  "Comments"},
+	{ID3_COMR,  {'C', 'O', 'M', 'R'},  "Commercial frame"},
 
-	{ID3_ENCR, "ENCR", "Encryption method registration"},
-	{ID3_EQUA, "EQUA", "Equalization"},			/* v3 only */
-	{ID3_EQU2, "EQU2", "Equalization (2)"},			/* v4 only */
-	{ID3_ETCO, "ETCO", "Event timing codes"},
+	{ID3_ENCR,  {'E', 'N', 'C', 'R'},  "Encryption method registration"},
+	{ID3_EQUA,  {'E', 'Q', 'U', 'A'},  "Equalization"}, 			/* v3 only */
+	{ID3_EQU2,  {'E', 'Q', 'U', '2'},  "Equalization (2)"}, 			/* v4 only */
+	{ID3_ETCO,  {'E', 'T', 'C', 'O'},  "Event timing codes"},
 
-	{ID3_GEOB, "GEOB", "General encapsulated object"},
-	{ID3_GRID, "GRID", "Group identification registration"},
+	{ID3_GEOB,  {'G', 'E', 'O', 'B'},  "General encapsulated object"},
+	{ID3_GRID,  {'G', 'R', 'I', 'D'},  "Group identification registration"},
 
-	{ID3_IPLS, "IPLS", "Involved people list"},		/* v3 only */
+	{ID3_IPLS,  {'I', 'P', 'L', 'S'},  "Involved people list"}, 		/* v3 only */
 
-	{ID3_LINK, "LINK", "Linked information"},
+	{ID3_LINK,  {'L', 'I', 'N', 'K'},  "Linked information"},
 
-	{ID3_MCDI, "MCDI", "Music CD identifier"},
-	{ID3_MLLT, "MLLT", "MPEG location lookup table"},
+	{ID3_MCDI,  {'M', 'C', 'D', 'I'},  "Music CD identifier"},
+	{ID3_MLLT,  {'M', 'L', 'L', 'T'},  "MPEG location lookup table"},
 
-	{ID3_OWNE, "OWNE", "Ownership frame"},
+	{ID3_OWNE,  {'O', 'W', 'N', 'E'},  "Ownership frame"},
 
-	{ID3_PRIV, "PRIV", "Private frame"},
-	{ID3_PCNT, "PCNT", "Play counter"},
-	{ID3_POPM, "POPM", "Popularimeter"},
-	{ID3_POSS, "POSS", "Position synchronisation frame"},
+	{ID3_PRIV,  {'P', 'R', 'I', 'V'},  "Private frame"},
+	{ID3_PCNT,  {'P', 'C', 'N', 'T'},  "Play counter"},
+	{ID3_POPM,  {'P', 'O', 'P', 'M'},  "Popularimeter"},
+	{ID3_POSS,  {'P', 'O', 'S', 'S'},  "Position synchronisation frame"},
 
-	{ID3_RBUF, "RBUF", "Recommended buffer size"},
-	{ID3_RVAD, "RVAD", "Relative volume adjustment"},	/* v3 only */
-	{ID3_RVA2, "RVA2", "RVA2 Relative volume adjustment (2)"},/* v4 only */
-	{ID3_RVRB, "RVRB", "Reverb"},
+	{ID3_RBUF,  {'R', 'B', 'U', 'F'},  "Recommended buffer size"},
+	{ID3_RVAD,  {'R', 'V', 'A', 'D'},  "Relative volume adjustment"}, 	/* v3 only */
+	{ID3_RVA2,  {'R', 'V', 'A', '2'},  "RVA2 Relative volume adjustment (2)"}, /* v4 only */
+	{ID3_RVRB,  {'R', 'V', 'R', 'B'},  "Reverb"},
 
-	{ID3_SEEK, "SEEK", "Seek frame"},			/* v4 only */
-	{ID3_SIGN, "SIGN", "Signature frame"},			/* v4 only */
-	{ID3_SYLT, "SYLT", "Synchronized lyric/text"},
-	{ID3_SYTC, "SYTC", "Synchronized tempo codes"},
+	{ID3_SEEK,  {'S', 'E', 'E', 'K'},  "Seek frame"}, 			/* v4 only */
+	{ID3_SIGN,  {'S', 'I', 'G', 'N'},  "Signature frame"}, 			/* v4 only */
+	{ID3_SYLT,  {'S', 'Y', 'L', 'T'},  "Synchronized lyric/text"},
+	{ID3_SYTC,  {'S', 'Y', 'T', 'C'},  "Synchronized tempo codes"},
 
-	{ID3_TALB, "TALB", "Album/Movie/Show title"},
-	{ID3_TBPM, "TBPM", "BPM (beats per minute)"},
-	{ID3_TCOM, "TCOM", "Composer"},
-	{ID3_TCON, "TCON", "Content type"},
-	{ID3_TCOP, "TCOP", "Copyright message"},
-	{ID3_TDAT, "TDAT", "Date"},				/* v3 only */
-	{ID3_TDEN, "TDEN", "Encoding time"},			/* v4 only */
-	{ID3_TDLY, "TDLY", "Playlist delay"},
-	{ID3_TDOR, "TDOR", "Original release time"},		/* v4 only */
-	{ID3_TDRC, "TDRC", "Recording time"},			/* v4 only */
-	{ID3_TDRL, "TDRL", "Release time"},			/* v4 only */
-	{ID3_TDTG, "TDTG", "Tagging time"},			/* v4 only */
+	{ID3_TALB,  {'T', 'A', 'L', 'B'},  "Album/Movie/Show title"},
+	{ID3_TBPM,  {'T', 'B', 'P', 'M'},  "BPM (beats per minute)"},
+	{ID3_TCOM,  {'T', 'C', 'O', 'M'},  "Composer"},
+	{ID3_TCON,  {'T', 'C', 'O', 'N'},  "Content type"},
+	{ID3_TCOP,  {'T', 'C', 'O', 'P'},  "Copyright message"},
+	{ID3_TDAT,  {'T', 'D', 'A', 'T'},  "Date"}, 				/* v3 only */
+	{ID3_TDEN,  {'T', 'D', 'E', 'N'},  "Encoding time"}, 			/* v4 only */
+	{ID3_TDLY,  {'T', 'D', 'L', 'Y'},  "Playlist delay"},
+	{ID3_TDOR,  {'T', 'D', 'O', 'R'},  "Original release time"}, 		/* v4 only */
+	{ID3_TDRC,  {'T', 'D', 'R', 'C'},  "Recording time"}, 			/* v4 only */
+	{ID3_TDRL,  {'T', 'D', 'R', 'L'},  "Release time"}, 			/* v4 only */
+	{ID3_TDTG,  {'T', 'D', 'T', 'G'},  "Tagging time"}, 			/* v4 only */
 
-	{ID3_TENC, "TENC", "Encoded by"},
-	{ID3_TEXT, "TEXT", "Lyricist/Text writer"},
-	{ID3_TFLT, "TFLT", "File type"},
-	{ID3_TIME, "TIME", "Time"},				/* v3 only */
-	{ID3_TIPL, "TIPL", "Involved people list"},		/* v4 only */
-	{ID3_TIT1, "TIT1", "Content group description"},
-	{ID3_TIT2, "TIT2", "Title/songname/content description"},
-	{ID3_TIT3, "TIT3", "Subtitle/Description refinement"},
-	{ID3_TKEY, "TKEY", "Initial key"},
-	{ID3_TLAN, "TLAN", "Language(s)"},
-	{ID3_TLEN, "TLEN", "Length"},
-	{ID3_TMCL, "TMCL", "Musician credits list"},		/* v4 only */
-	{ID3_TMOO, "TMOO", "Mood"},				/* v4 only */
-	{ID3_TMED, "TMED", "Media type"},
-	{ID3_TOAL, "TOAL", "Original album/movie/show title"},
-	{ID3_TOFN, "TOFN", "Original filename"},
-	{ID3_TOLY, "TOLY", "Original lyricist(s)/text writer(s)"},
-	{ID3_TOPE, "TOPE", "Original artist(s)/performer(s)"},
-	{ID3_TORY, "TORY", "Original release year"},		/* v3 only */
-	{ID3_TOWN, "TOWN", "File owner/licensee"},
-	{ID3_TPE1, "TPE1", "Lead performer(s)/Soloist(s)"},
-	{ID3_TPE2, "TPE2", "Band/orchestra/accompaniment"},
-	{ID3_TPE3, "TPE3", "Conductor/performer refinement"},
-	{ID3_TPE4, "TPE4", "Interpreted, remixed, or otherwise modified by"},
-	{ID3_TPOS, "TPOS", "Part of a set"},
-	{ID3_TPRO, "TPRO", "Produced notice"},			/* v4 only */
-	{ID3_TPUB, "TPUB", "Publisher"},
-	{ID3_TRCK, "TRCK", "Track number/Position in set"},
-	{ID3_TRDA, "TRDA", "Recording dates"},			/* v3 only */
-	{ID3_TRSN, "TRSN", "Internet radio station name"},
-	{ID3_TRSO, "TRSO", "Internet radio station owner"},
-	{ID3_TSIZ, "TSIZ", "Size"},				/* v3 only */
-	{ID3_TSOA, "TSOA", "Album sort order"},			/* v4 only */
-	{ID3_TSOP, "TSOP", "Performer sort order"},		/* v4 only */
-	{ID3_TSOT, "TSOT", "Title sort order"},			/* v4 only */
+	{ID3_TENC,  {'T', 'E', 'N', 'C'},  "Encoded by"},
+	{ID3_TEXT,  {'T', 'E', 'X', 'T'},  "Lyricist/Text writer"},
+	{ID3_TFLT,  {'T', 'F', 'L', 'T'},  "File type"},
+	{ID3_TIME,  {'T', 'I', 'M', 'E'},  "Time"}, 				/* v3 only */
+	{ID3_TIPL,  {'T', 'I', 'P', 'L'},  "Involved people list"}, 		/* v4 only */
+	{ID3_TIT1,  {'T', 'I', 'T', '1'},  "Content group description"},
+	{ID3_TIT2,  {'T', 'I', 'T', '2'},  "Title/songname/content description"},
+	{ID3_TIT3,  {'T', 'I', 'T', '3'},  "Subtitle/Description refinement"},
+	{ID3_TKEY,  {'T', 'K', 'E', 'Y'},  "Initial key"},
+	{ID3_TLAN,  {'T', 'L', 'A', 'N'},  "Language(s)"},
+	{ID3_TLEN,  {'T', 'L', 'E', 'N'},  "Length"},
+	{ID3_TMCL,  {'T', 'M', 'C', 'L'},  "Musician credits list"}, 		/* v4 only */
+	{ID3_TMOO,  {'T', 'M', 'O', 'O'},  "Mood"}, 				/* v4 only */
+	{ID3_TMED,  {'T', 'M', 'E', 'D'},  "Media type"},
+	{ID3_TOAL,  {'T', 'O', 'A', 'L'},  "Original album/movie/show title"},
+	{ID3_TOFN,  {'T', 'O', 'F', 'N'},  "Original filename"},
+	{ID3_TOLY,  {'T', 'O', 'L', 'Y'},  "Original lyricist(s)/text writer(s)"},
+	{ID3_TOPE,  {'T', 'O', 'P', 'E'},  "Original artist(s)/performer(s)"},
+	{ID3_TORY,  {'T', 'O', 'R', 'Y'},  "Original release year"}, 		/* v3 only */
+	{ID3_TOWN,  {'T', 'O', 'W', 'N'},  "File owner/licensee"},
+	{ID3_TPE1,  {'T', 'P', 'E', '1'},  "Lead performer(s)/Soloist(s)"},
+	{ID3_TPE2,  {'T', 'P', 'E', '2'},  "Band/orchestra/accompaniment"},
+	{ID3_TPE3,  {'T', 'P', 'E', '3'},  "Conductor/performer refinement"},
+	{ID3_TPE4,  {'T', 'P', 'E', '4'},  "Interpreted,  remixed,  or otherwise modified by"},
+	{ID3_TPOS,  {'T', 'P', 'O', 'S'},  "Part of a set"},
+	{ID3_TPRO,  {'T', 'P', 'R', 'O'},  "Produced notice"}, 			/* v4 only */
+	{ID3_TPUB,  {'T', 'P', 'U', 'B'},  "Publisher"},
+	{ID3_TRCK,  {'T', 'R', 'C', 'K'},  "Track number/Position in set"},
+	{ID3_TRDA,  {'T', 'R', 'D', 'A'},  "Recording dates"}, 			/* v3 only */
+	{ID3_TRSN,  {'T', 'R', 'S', 'N'},  "Internet radio station name"},
+	{ID3_TRSO,  {'T', 'R', 'S', 'O'},  "Internet radio station owner"},
+	{ID3_TSIZ,  {'T', 'S', 'I', 'Z'},  "Size"}, 				/* v3 only */
+	{ID3_TSOA,  {'T', 'S', 'O', 'A'},  "Album sort order"}, 			/* v4 only */
+	{ID3_TSOP,  {'T', 'S', 'O', 'P'},  "Performer sort order"}, 		/* v4 only */
+	{ID3_TSOT,  {'T', 'S', 'O', 'T'},  "Title sort order"}, 			/* v4 only */
 
-	{ID3_TSRC, "TSRC", "ISRC (international standard recording code)"},
-	{ID3_TSSE, "TSSE", "Software/Hardware and settings used for encoding"},
-	{ID3_TSST, "TSST", "Set subtitle"},			/* v4 only */
-	{ID3_TYER, "TYER", "Year"},				/* v3 only */
-	{ID3_TXXX, "TXXX", "User defined text information frame"},
+	{ID3_TSRC,  {'T', 'S', 'R', 'C'},  "ISRC (international standard recording code)"},
+	{ID3_TSSE,  {'T', 'S', 'S', 'E'},  "Software/Hardware and settings used for encoding"},
+	{ID3_TSST,  {'T', 'S', 'S', 'T'},  "Set subtitle"}, 			/* v4 only */
+	{ID3_TYER,  {'T', 'Y', 'E', 'R'},  "Year"}, 				/* v3 only */
+	{ID3_TXXX,  {'T', 'X', 'X', 'X'},  "User defined text information frame"},
 
-	{ID3_UFID, "UFID", "Unique file identifier"},
-	{ID3_USER, "USER", "Terms of use"},
-	{ID3_USLT, "USLT", "Unsychronized lyric/text transcription"},
+	{ID3_UFID,  {'U', 'F', 'I', 'D'},  "Unique file identifier"},
+	{ID3_USER,  {'U', 'S', 'E', 'R'},  "Terms of use"},
+	{ID3_USLT,  {'U', 'S', 'L', 'T'},  "Unsychronized lyric/text transcription"}, 
 
-	{ID3_WCOM, "WCOM", "Commercial information"},
-	{ID3_WCOP, "WCOP", "Copyright/Legal information"},
-	{ID3_WOAF, "WOAF", "Official audio file webpage"},
-	{ID3_WOAR, "WOAR", "Official artist/performer webpage"},
-	{ID3_WOAS, "WOAS", "Official audio source webpage"},
-	{ID3_WORS, "WORS", "Official internet radio station homepage"},
-	{ID3_WPAY, "WPAY", "Payment"},
-	{ID3_WPUB, "WPUB", "Publishers official webpage"},
-	{ID3_WXXX, "WXXX", "User defined URL link frame"},
+	{ID3_WCOM,  {'W', 'C', 'O', 'M'},  "Commercial information"},
+	{ID3_WCOP,  {'W', 'C', 'O', 'P'},  "Copyright/Legal information"},
+	{ID3_WOAF,  {'W', 'O', 'A', 'F'},  "Official audio file webpage"},
+	{ID3_WOAR,  {'W', 'O', 'A', 'R'},  "Official artist/performer webpage"},
+	{ID3_WOAS,  {'W', 'O', 'A', 'S'},  "Official audio source webpage"},
+	{ID3_WORS,  {'W', 'O', 'R', 'S'},  "Official internet radio station homepage"},
+	{ID3_WPAY,  {'W', 'P', 'A', 'Y'},  "Payment"},
+	{ID3_WPUB,  {'W', 'P', 'U', 'B'},  "Publishers official webpage"},
+	{ID3_WXXX,  {'W', 'X', 'X', 'X'},  "User defined URL link frame"},
 };
 
 struct id3_framedesc22 {

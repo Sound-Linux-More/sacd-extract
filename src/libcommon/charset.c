@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <iconv.h>
+#include <stddef.h>
 #include <errno.h>
 
 #ifdef HAVE_CODESET
@@ -32,6 +33,9 @@ char* charset_get_current(void)
 	return charset;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
+
 char* charset_convert(const char *string, size_t insize, const char *from, const char *to)
 {
 	size_t outleft, outsize;
@@ -47,7 +51,8 @@ char* charset_convert(const char *string, size_t insize, const char *from, const
 	if (!to)
 		to = charset_get_current();
 
-	if ((cd = iconv_open(to, from)) == (iconv_t)-1)
+    cd = iconv_open(to, from);
+	if (cd == (iconv_t)-1)
 	{
 		LOG(lm_main, LOG_ERROR, ("convert_string(): Conversion not supported. "
 			  "Charsets: %s -> %s", from, to));
@@ -56,7 +61,7 @@ char* charset_convert(const char *string, size_t insize, const char *from, const
 
 	/* Due to a GLIBC bug, round outbuf_size up to a multiple of 4 */
 	/* + 4 for nul in case len == 1 */
-	outsize = ((insize + 3) & ~3) + 4;
+	outsize = ((insize + 3) & ~(size_t)3) + 4;
 	out = malloc(outsize);
 	outleft = outsize - 4;
 	outptr = out;
@@ -68,11 +73,19 @@ char* charset_convert(const char *string, size_t insize, const char *from, const
  	if (iconv(cd,(char **) &input, &insize, &outptr, &outleft) == (size_t) -1)
 #endif
 	{
-		int used;
+		size_t used;
+        ptrdiff_t converted_offset;
 		switch (errno)
 		{
 			case E2BIG:
-				used = outptr - out;
+                converted_offset = outptr - out;
+                if (converted_offset < 0) {
+                    LOG(lm_main, LOG_ERROR, ("convert_string(): Conversion failed. "
+                        "Inputstring: %s; Error: %s",
+                        string, strerror(errno)));
+                    break;
+                }
+				used = (size_t)converted_offset;
 				outsize = ((outsize - 4) * 2) + 4;
 				out = realloc(out, outsize);
 				outptr = out + used;
@@ -98,6 +111,8 @@ char* charset_convert(const char *string, size_t insize, const char *from, const
 	iconv_close(cd);
 	return out;
 }
+
+#pragma GCC diagnostic pop
 
 char* charset_from_utf8(const char *string)
 {

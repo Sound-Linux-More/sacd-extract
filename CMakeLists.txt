@@ -75,22 +75,6 @@ include_directories("../../libs/libsacd")
 message(STATUS "libmxl2 ${LIBXML2_LIBRARIES}")
 find_package(LibXml2 REQUIRED)
 
-# Extra flags for GCC
-STRING(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-if(NOT CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
-  if (CMAKE_COMPILER_IS_GNUCC OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
-    add_definitions(
-        -pipe
-        -Wall -Wextra -Wcast-align -Wpointer-arith -O3
-        -Wno-unused-parameter `xml2-config --cflags --libs`)
-  endif ()
-  if(NOT CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm*")
-    add_definitions(
-        -msse2)
-  endif ()
-endif ()
-
-
 file(GLOB libcommon_headers src/libcommon/*.h)
 file(GLOB libcommon_sources src/libcommon/*.c)
 source_group(libcommon FILES ${libcommon_headers} ${libcommon_sources})
@@ -118,6 +102,27 @@ add_executable(sacd_extract
     ${libid3_headers} ${libid3_sources}
     ${libsacd_headers} ${libsacd_sources}
     )
+
+# Extra flags for GCC
+STRING(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+if(NOT CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
+    if(CMAKE_C_COMPILER_ID MATCHES "^(GNU|Clang)$")
+        target_compile_options(${PROJECT_NAME} PRIVATE
+            -pipe
+            -Wall -Wextra -Wcast-align -Wpointer-arith -O3
+            -Wno-unused-parameter
+        )
+        add_definitions(`xml2-config --cflags --libs`)
+    endif()
+    
+    if(NOT CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm*")
+        add_definitions(
+            -msse2
+        )
+    endif ()
+endif ()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE LibXml2::LibXml2)
 
 if(WIN32)
     set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIRARIES} -lpthread -lws2_32 -liconv -lxml2 -static")
